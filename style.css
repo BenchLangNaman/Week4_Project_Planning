@@ -1,0 +1,235 @@
+/* =========================================================
+   BloomWell — Global Stylesheet
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --pink:        #e8748a;
+  --pink-light:  #f5a8b8;
+  --pink-pale:   #fde8ee;
+  --pink-bg:     #fdf3f5;
+  --rose:        #c94f68;
+  --blush:       #f9d4dc;
+  --cream:       #fffaf9;
+  --sage:        #8fa882;
+  --mauve:       #c4a7c8;
+  --text:        #2a1a1f;
+  --text-muted:  #7a6068;
+  --white:       #ffffff;
+  --shadow:      0 4px 24px rgba(200, 80, 110, 0.10);
+  --shadow-md:   0 8px 40px rgba(200, 80, 110, 0.14);
+  --radius:      14px;
+  --radius-lg:   22px;
+  --radius-pill: 999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--pink-bg); }
+::-webkit-scrollbar-thumb { background: var(--pink-light); border-radius: 99px; }
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(255,250,249,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--blush);
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.navbar-logo .logo-icon { font-size: 1.5rem; line-height: 1; }
+.navbar-logo .logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.3px;
+}
+.navbar-logo .logo-text span { color: var(--pink); }
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+}
+.navbar-links a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  transition: color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.navbar-links a:hover { color: var(--pink); }
+.navbar-links a.active {
+  background: var(--pink-pale);
+  color: var(--pink);
+  font-weight: 600;
+}
+.navbar-links a.active::after {
+  content: '';
+  display: block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--pink);
+  margin-left: 2px;
+}
+
+.btn-ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--pink-pale);
+  color: var(--pink);
+  border: 1.5px solid var(--pink-light);
+  padding: 8px 20px;
+  border-radius: var(--radius-pill);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.btn-ask:hover {
+  background: var(--pink);
+  color: var(--white);
+  border-color: var(--pink);
+  transform: translateY(-1px);
+}
+.btn-ask svg { flex-shrink: 0; }
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+footer {
+  background: var(--white);
+  border-top: 1px solid var(--blush);
+  text-align: center;
+  padding: 24px 20px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* =========================================================
+   UTILITY
+   ========================================================= */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.tag-pink      { background: #fde8ee; color: #c94f68; }
+.tag-purple    { background: #ede8f5; color: #7c5cbf; }
+.tag-green     { background: #e8f4ec; color: #3d8a58; }
+.tag-orange    { background: #fef0e6; color: #c4692a; }
+.tag-teal      { background: #e6f4f4; color: #2a8a8a; }
+.tag-yellow    { background: #fef8e6; color: #a07c20; }
+
+/* Search Input shared */
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-wrap svg.search-ico {
+  position: absolute;
+  left: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.search-wrap .search-flower {
+  position: absolute;
+  right: 18px;
+  font-size: 1rem;
+  pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  padding: 14px 50px 14px 50px;
+  border: 1.5px solid var(--blush);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input::placeholder { color: #bba8ae; }
+.search-input:focus {
+  border-color: var(--pink-light);
+  box-shadow: 0 0 0 4px rgba(232,116,138,0.10);
+}
+
+/* Arrow button */
+.btn-arrow {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: var(--pink);
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.btn-arrow:hover { background: var(--rose); transform: scale(1.07); }
+
+/* Primary Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pink);
+  color: var(--white);
+  border: none;
+  padding: 13px 28px;
+  border-radius: var(--radius-pill);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-primary:hover { background: var(--rose); transform: translateY(-2px); }

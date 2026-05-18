@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BloomWell — About Us</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.about-page { margin-top: 68px; background: var(--cream); min-height: 100vh; }
+
+/* ── HERO ── */
+.about-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--blush);
+}
+
+/* Gradient base */
+.about-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 10% 50%, #fde0e8 0%, transparent 60%),
+    radial-gradient(ellipse 60% 70% at 90% 30%, #e8d8f5 0%, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 50% 100%, #fce8d4 0%, transparent 60%),
+    linear-gradient(135deg, #fdf0f4 0%, #f5eef9 50%, #fef5ee 100%);
+  z-index: 0;
+}
+
+/* SVG botanical art layer */
+.about-hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Semi-transparent overlay to keep text crisp */
+.about-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,250,252,0.55);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.about-hero-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  padding: 70px 40px;
+  max-width: 660px;
+}
+.about-hero-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 14px;
+  line-height: 1.22;
+}
+.about-hero-content p {
+  font-size: 0.97rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* floating petal animations */
+@keyframes petalFloat {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  33%      { transform: translateY(-10px) rotate(4deg); }
+  66%      { transform: translateY(-5px) rotate(-3deg); }
+}
+@keyframes petalSway {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(6deg); }
+}
+.petal-a { animation: petalFloat 5s ease-in-out infinite; }
+.petal-b { animation: petalSway  6s ease-in-out infinite; animation-delay: 1s; }
+.petal-c { animation: petalFloat 7s ease-in-out infinite; animation-delay: 2s; }
+.petal-d { animation: petalSway  5.5s ease-in-out infinite; animation-delay: 0.5s; }
+@keyframes twinkle { 0%,100%{opacity:0.25;transform:scale(1)} 50%{opacity:0.9;transform:scale(1.3)} }
+.sparkle { animation: twinkle 2.5s ease-in-out infinite; }
+.sparkle2 { animation: twinkle 3.2s ease-in-out infinite; animation-delay: 0.8s; }
+.sparkle3 { animation: twinkle 2.8s ease-in-out infinite; animation-delay: 1.5s; }
+
+/* ── BODY ── */
+.about-body { max-width: 1100px; margin: 0 auto; padding: 50px 40px 90px; }
+@media(max-width: 600px) { .about-body { padding: 30px 18px 60px; } }
+
+.section-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 6px;
+}
+.section-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 32px; line-height: 1.6; }
+.divider {
+  width: 48px; height: 3px;
+  background: linear-gradient(90deg, var(--pink), var(--pink-light));
+  border-radius: 3px; margin-bottom: 14px;
+}
+
+/* Mission / Vision */
+.mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 56px; }
+@media(max-width: 680px) { .mv-grid { grid-template-columns: 1fr; } }
+.mv-card {
+  background: var(--white); border: 1.5px solid var(--blush);
+  border-radius: var(--radius-lg); padding: 28px 28px 24px;
+  box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.15s;
+}
+.mv-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.mv-card-icon { font-size: 1.6rem; margin-bottom: 12px; }
+.mv-card h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.mv-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; }
+
+/* Team */
+.team-section { margin-bottom: 56px; }
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 20px; }
+.team-card {
+  background: var(--white); border: 1.5px solid var(--blush);
+  border-radius: var(--radius-lg); padding: 24px 20px 20px;
+  text-align: center; box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+.team-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+
+/* ─────────────────────────────────────────────────────────────
+   MEMBER PHOTO
+   For each member:
+     1. Set src="your-photo.jpg"
+     2. Remove style="display:none" from <img>
+   The coloured circle is the fallback while no photo is set.
+   ───────────────────────────────────────────────────────────── */
+.member-photo-wrap {
+  width: 72px; height: 72px; border-radius: 50%;
+  margin: 0 auto 12px; overflow: hidden; border: 2.5px solid var(--blush);
+}
+.member-photo { width: 100%; height: 100%; object-fit: cover; display: none; }
+.member-avatar-fallback {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; font-weight: 700; color: var(--white); border-radius: 50%;
+}
+.member-name { font-weight: 700; font-size: 0.93rem; color: var(--text); margin-bottom: 3px; }
+.member-role { font-size: 0.78rem; color: var(--pink); font-weight: 600; margin-bottom: 6px; }
+.member-bio  { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+/* Values */
+.values-section { margin-bottom: 56px; }
+.values-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.value-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--white); border: 1.5px solid var(--blush);
+  border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow);
+}
+.value-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.value-body h4 { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
+.value-body p  { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+
+/* CTA */
+.about-cta {
+  background: linear-gradient(135deg, #fde8ee 0%, #f9d4dc 100%);
+  border: 1.5px solid var(--blush); border-radius: var(--radius-lg);
+  padding: 36px 40px; text-align: center;
+}
+.about-cta h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.about-cta p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; }
+.cta-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">
+    <span class="logo-icon">🌸</span>
+    <span class="logo-text">Bloom<span>Well</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="uhc.html">UHC</a></li>
+    <li><a href="forum.html">Forum</a></li>
+    <li><a href="aboutus.html" class="active">About us</a></li>
+  </ul>
+  <a href="forum.html" class="btn-ask">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    Ask a Question
+  </a>
+</nav>
+
+<div class="about-page">
+
+  <!-- HERO with built-in botanical art -->
+  <div class="about-hero">
+    <div class="about-hero-bg"></div>
+
+    <!-- Decorative SVG botanical illustration -->
+    <svg class="about-hero-art" viewBox="0 0 1200 360" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Left large bloom -->
+      <g class="petal-a" style="transform-origin:160px 280px">
+        <ellipse cx="160" cy="200" rx="48" ry="72" fill="#f9c8d8" opacity="0.55" transform="rotate(-20,160,200)"/>
+        <ellipse cx="108" cy="220" rx="40" ry="62" fill="#f5b8cc" opacity="0.45" transform="rotate(-60,108,220)"/>
+        <ellipse cx="130" cy="160" rx="38" ry="60" fill="#fad4e0" opacity="0.5" transform="rotate(20,130,160)"/>
+        <ellipse cx="195" cy="175" rx="36" ry="58" fill="#f9c0d0" opacity="0.45" transform="rotate(55,195,175)"/>
+        <ellipse cx="185" cy="240" rx="34" ry="56" fill="#f8b8cc" opacity="0.4" transform="rotate(80,185,240)"/>
+        <circle cx="155" cy="210" r="22" fill="#f0a8bc" opacity="0.7"/>
+        <circle cx="155" cy="210" r="10" fill="#e88aa8" opacity="0.5"/>
+      </g>
+      <!-- Left stem -->
+      <path d="M155 232 Q140 290 130 340" stroke="#b8d4a8" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+      <ellipse cx="118" cy="305" rx="18" ry="10" fill="#c8e0b8" opacity="0.5" transform="rotate(-30,118,305)"/>
+      <ellipse cx="142" cy="320" rx="16" ry="9" fill="#c0d8b0" opacity="0.45" transform="rotate(20,142,320)"/>
+
+      <!-- Left small flower -->
+      <g class="petal-c" style="transform-origin:60px 160px">
+        <ellipse cx="60" cy="120" rx="22" ry="34" fill="#f8d0e0" opacity="0.6" transform="rotate(-15,60,120)"/>
+        <ellipse cx="35" cy="138" rx="20" ry="30" fill="#f5c4d8" opacity="0.5" transform="rotate(-60,35,138)"/>
+        <ellipse cx="48" cy="100" rx="18" ry="28" fill="#fad8e8" opacity="0.55" transform="rotate(25,48,100)"/>
+        <ellipse cx="82" cy="112" rx="18" ry="28" fill="#f8cce0" opacity="0.5" transform="rotate(60,82,112)"/>
+        <ellipse cx="78" cy="148" rx="16" ry="26" fill="#f5c0d8" opacity="0.45" transform="rotate(90,78,148)"/>
+        <circle cx="58" cy="128" r="12" fill="#eba8c4" opacity="0.7"/>
+      </g>
+      <path d="M58 140 Q50 180 45 220" stroke="#b8d4a8" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+
+      <!-- Right large bloom -->
+      <g class="petal-b" style="transform-origin:1040px 200px">
+        <ellipse cx="1040" cy="140" rx="52" ry="78" fill="#e8c8f0" opacity="0.55" transform="rotate(15,1040,140)"/>
+        <ellipse cx="988" cy="160" rx="44" ry="66" fill="#ddbce8" opacity="0.45" transform="rotate(-50,988,160)"/>
+        <ellipse cx="1015" cy="95" rx="42" ry="64" fill="#ecd4f4" opacity="0.5" transform="rotate(-10,1015,95)"/>
+        <ellipse cx="1085" cy="108" rx="40" ry="62" fill="#e4c4ee" opacity="0.45" transform="rotate(50,1085,108)"/>
+        <ellipse cx="1078" cy="178" rx="38" ry="58" fill="#ddb8e8" opacity="0.4" transform="rotate(85,1078,178)"/>
+        <circle cx="1038" cy="148" r="24" fill="#cca0e0" opacity="0.65"/>
+        <circle cx="1038" cy="148" r="11" fill="#b888d0" opacity="0.5"/>
+      </g>
+      <!-- Right stem -->
+      <path d="M1038 172 Q1055 240 1065 330" stroke="#b8d4a8" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
+      <ellipse cx="1075" cy="280" rx="20" ry="11" fill="#c8e0b8" opacity="0.5" transform="rotate(30,1075,280)"/>
+      <ellipse cx="1055" cy="310" rx="18" ry="10" fill="#c0d8b0" opacity="0.45" transform="rotate(-20,1055,310)"/>
+
+      <!-- Right small bloom -->
+      <g class="petal-d" style="transform-origin:1150px 240px">
+        <ellipse cx="1150" cy="195" rx="28" ry="42" fill="#fce0c0" opacity="0.6" transform="rotate(20,1150,195)"/>
+        <ellipse cx="1118" cy="215" rx="24" ry="38" fill="#f8d4b0" opacity="0.5" transform="rotate(-55,1118,215)"/>
+        <ellipse cx="1135" cy="168" rx="22" ry="36" fill="#fde8cc" opacity="0.55" transform="rotate(5,1135,168)"/>
+        <ellipse cx="1176" cy="178" rx="22" ry="34" fill="#fad8b8" opacity="0.5" transform="rotate(60,1176,178)"/>
+        <ellipse cx="1170" cy="228" rx="20" ry="32" fill="#f8cca8" opacity="0.45" transform="rotate(90,1170,228)"/>
+        <circle cx="1148" cy="203" r="15" fill="#f0b888" opacity="0.65"/>
+      </g>
+      <path d="M1148 218 Q1158 265 1162 320" stroke="#b8d4a8" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+
+      <!-- Center top small accent flower -->
+      <g class="petal-a" style="transform-origin:600px 50px">
+        <ellipse cx="600" cy="20" rx="16" ry="26" fill="#f9d0e0" opacity="0.55" transform="rotate(-10,600,20)"/>
+        <ellipse cx="578" cy="32" rx="14" ry="22" fill="#f5c4d8" opacity="0.48" transform="rotate(-60,578,32)"/>
+        <ellipse cx="590" cy="5" rx="13" ry="21" fill="#fad8e8" opacity="0.5" transform="rotate(20,590,5)"/>
+        <ellipse cx="622" cy="14" rx="13" ry="21" fill="#f8cce0" opacity="0.45" transform="rotate(55,622,14)"/>
+        <ellipse cx="618" cy="44" rx="12" ry="20" fill="#f5c0d8" opacity="0.42" transform="rotate(85,618,44)"/>
+        <circle cx="598" cy="28" r="9" fill="#eba8c4" opacity="0.6"/>
+      </g>
+
+      <!-- Scattered petals -->
+      <ellipse cx="320" cy="60" rx="12" ry="20" fill="#f9c8d8" opacity="0.35" transform="rotate(35,320,60)"/>
+      <ellipse cx="880" cy="80" rx="10" ry="17" fill="#e8c8f0" opacity="0.35" transform="rotate(-25,880,80)"/>
+      <ellipse cx="450" cy="300" rx="9" ry="15" fill="#fce0c0" opacity="0.3" transform="rotate(15,450,300)"/>
+      <ellipse cx="760" cy="320" rx="10" ry="16" fill="#f9c8d8" opacity="0.3" transform="rotate(-40,760,320)"/>
+
+      <!-- Tiny leaves -->
+      <ellipse cx="280" cy="200" rx="14" ry="7" fill="#b8d8a8" opacity="0.4" transform="rotate(-45,280,200)"/>
+      <ellipse cx="920" cy="250" rx="14" ry="7" fill="#b8d8a8" opacity="0.4" transform="rotate(40,920,250)"/>
+      <ellipse cx="380" cy="330" rx="12" ry="6" fill="#c0dcb0" opacity="0.35" transform="rotate(-20,380,330)"/>
+
+      <!-- Sparkle stars -->
+      <text class="sparkle"  x="260" y="90"  font-size="18" fill="#e8748a" opacity="0.5">✦</text>
+      <text class="sparkle2" x="940" y="60"  font-size="14" fill="#c4a7c8" opacity="0.5">✦</text>
+      <text class="sparkle3" x="500" y="330" font-size="12" fill="#e8748a" opacity="0.45">✦</text>
+      <text class="sparkle"  x="700" y="40"  font-size="10" fill="#d4a870" opacity="0.4">✦</text>
+      <text class="sparkle2" x="820" y="300" font-size="11" fill="#c4a7c8" opacity="0.4">✦</text>
+
+      <!-- Dotted vine lines -->
+      <path d="M130 340 Q200 310 270 330 Q340 350 420 320" stroke="#c8ddb8" stroke-width="1.5" fill="none" stroke-dasharray="5,4" opacity="0.5"/>
+      <path d="M780 310 Q860 340 930 320 Q1000 295 1065 330" stroke="#c8ddb8" stroke-width="1.5" fill="none" stroke-dasharray="5,4" opacity="0.5"/>
+    </svg>
+
+    <div class="about-hero-overlay"></div>
+
+    <div class="about-hero-content">
+      <h1>About BloomWell 🌸</h1>
+      <p>We're a passionate team of advocates, educators, and health enthusiasts dedicated to making reproductive health information accessible, safe, and stigma-free for everyone.</p>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="about-body">
+
+    <!-- Mission & Vision -->
+    <div class="mv-grid">
+      <div class="mv-card">
+        <div class="mv-card-icon">🎯</div>
+        <h3>Our Mission</h3>
+        <p>To empower individuals with accurate, compassionate, and accessible reproductive health information — fostering a community where no question goes unanswered and no one feels alone.</p>
+      </div>
+      <div class="mv-card">
+        <div class="mv-card-icon">🌺</div>
+        <h3>Our Vision</h3>
+        <p>A world where reproductive health is understood, respected, and openly discussed — where every person, regardless of background, can make informed decisions about their own well-being.</p>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="team-section">
+      <div class="divider"></div>
+      <div class="section-label">Meet the Team</div>
+      <p class="section-sub">The people behind BloomWell — driven by care, curiosity, and a commitment to your health.</p>
+
+      <div class="team-grid">
+
+        <div class="team-card">
+          <div class="member-photo-wrap">
+            <img class="member-photo" src="sophi.jpg" alt="Member 1">
+            <div class="member-avatar-fallback" style="background:#e8748a;">MB</div>
+          </div>
+          <div class="member-name">Christian Tamayo</div>
+          <div class="member-role">Team Lead</div>
+          <div class="member-bio">Short bio or description about this person and their role in BloomWell.</div>
+        </div>
+
+        <div class="team-card">
+          <div class="member-photo-wrap">
+            <img class="member-photo" src="sophi1.png" alt="Member 2">
+            <div class="member-avatar-fallback" style="background:#8fa882;">MB</div>
+          </div>
+          <div class="member-name">Benedict Gellegani</div>
+          <div class="member-role">Lead Developer</div>
+          <div class="member-bio">Short bio or description about this person and their role in BloomWell.</div>
+        </div>
+
+        <div class="team-card">
+          <div class="member-photo-wrap">
+            <img class="member-photo" src="YOUR_PHOTO_3.jpg" alt="Member 3">
+            <div class="member-avatar-fallback" style="background:#c4a7c8;">MB</div>
+          </div>
+          <div class="member-name">Danah Socorro</div>
+          <div class="member-role">Developer</div>
+          <div class="member-bio">Short bio or description about this person and their role in BloomWell.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Values -->
+    <div class="values-section">
+      <div class="divider"></div>
+      <div class="section-label">What We Stand For</div>
+      <p class="section-sub">Our core values guide every resource, reply, and conversation on BloomWell.</p>
+      <div class="values-list">
+        <div class="value-item">
+          <div class="value-icon">🔒</div>
+          <div class="value-body">
+            <h4>Safe & Anonymous</h4>
+            <p>Your privacy matters. Our forum is anonymous so you can ask anything without fear.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">📚</div>
+          <div class="value-body">
+            <h4>Evidence-Based</h4>
+            <p>Every piece of content is grounded in accurate, up-to-date health information.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">💗</div>
+          <div class="value-body">
+            <h4>Compassionate</h4>
+            <p>We approach every topic and person with kindness, empathy, and zero judgment.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🌍</div>
+          <div class="value-body">
+            <h4>Inclusive</h4>
+            <p>Reproductive health is for everyone — regardless of age, gender, or background.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🤝</div>
+          <div class="value-body">
+            <h4>Community-Driven</h4>
+            <p>We grow together. Real experiences and peer support are at the heart of what we do.</p>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🌱</div>
+          <div class="value-body">
+            <h4>Empowering</h4>
+            <p>Knowledge is power. We believe informed individuals build healthier futures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="about-cta">
+      <h2>Ready to join the conversation? 🌸</h2>
+      <p>Ask a question, share your experience, or simply browse — you're safe here.</p>
+      <div class="cta-btns">
+        <a href="forum.html" class="btn-primary">Visit the Forum</a>
+        <a href="uhc.html" style="background:var(--white);border:1.5px solid var(--blush);color:var(--text);padding:10px 22px;border-radius:var(--radius-pill);font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:box-shadow 0.2s;">Learn About UHC</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>BloomWell © 2026 — Your health, your future, your choice.</footer>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BloomWell — Home</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.hero {
+  position: relative;
+  min-height: 420px;
+  margin-top: 68px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(120deg,#fce8ed 0%,#fdf0f4 40%,#fef5f0 70%,#fdf0f8 100%);
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: url(indexImg.png);
+  background-size: cover; background-position: center; z-index: 0;
+}
+.hero-bg-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg,rgba(252,232,237,0.5) 0%,rgba(253,240,244,0.4) 50%,rgba(254,245,240,0.35) 100%);
+  z-index: 1; pointer-events: none;
+}
+
+.hero-left {
+  position: relative; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  height: 100%; min-height: 400px;
+}
+
+.hero-right {
+  padding: 50px 55px 50px 20px;
+  position: relative; z-index: 3;
+}
+.hero-quote-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 4.5rem; line-height: 0.55; color: var(--pink);
+  display: block; margin-bottom: 6px;
+}
+.quote-rotator { position: relative; min-height: 170px; }
+.quote-slide {
+  position: absolute; top:0; left:0; width:100%;
+  opacity:0; transform:translateY(12px);
+  transition: opacity .6s ease, transform .6s ease;
+  pointer-events: none;
+}
+.quote-slide.active {
+  opacity:1; transform:translateY(0);
+  pointer-events: auto; position: relative;
+}
+.hero-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700; line-height: 1.25;
+  color: var(--text); margin-bottom: 8px;
+}
+.hero-attribution { color: var(--pink); font-size: .9rem; font-weight: 600; margin-bottom: 12px; }
+.quote-dots { display: flex; gap: 7px; margin-bottom: 14px; }
+.quote-dot {
+  width:7px; height:7px; border-radius:50%;
+  background: var(--pink-light); border:none; cursor:pointer; padding:0;
+  transition: background .2s, transform .2s;
+}
+.quote-dot.active { background: var(--pink); transform: scale(1.3); }
+.hero-sub { color: var(--text-muted); font-size: .94rem; line-height: 1.6; margin-bottom: 22px; }
+.hero-actions { display: flex; align-items: center; gap: 14px; }
+
+/* ── SOLID SEARCH BAR ── */
+.search-section {
+  background: var(--white);
+  border-bottom: 1.5px solid var(--blush);
+  padding: 18px 30px;
+  box-shadow: 0 4px 18px rgba(232,116,138,0.08);
+}
+.search-inner { max-width: 700px; margin: 0 auto; }
+
+/* ── FEATURES ── */
+.features-section { padding: 40px 30px 60px; max-width: 1140px; margin: 0 auto; }
+.features-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+@media(max-width:900px){ .features-grid{ grid-template-columns: repeat(2,1fr); } }
+@media(max-width:520px) { .features-grid{ grid-template-columns: 1fr; } }
+.feat-card {
+  background: var(--white); border: 1px solid var(--blush);
+  border-radius: var(--radius-lg); padding: 24px 22px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: var(--shadow); transition: transform .2s, box-shadow .2s;
+}
+.feat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+.feat-icon-wrap {
+  width:52px; height:52px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.4rem; flex-shrink:0;
+}
+.feat-icon-wrap.pink  { background:#fde8ee; }
+.feat-icon-wrap.sage  { background:#e8f1e8; }
+.feat-icon-wrap.blush { background:#fde8ee; }
+.feat-icon-wrap.mauve { background:#ede8f5; }
+.feat-card h3 { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--text); }
+.feat-card p  { font-size:.85rem; color:var(--text-muted); line-height:1.55; flex:1; }
+.feat-card .btn-arrow { width:36px; height:36px; align-self:flex-end; margin-top:4px; }
+
+/* ── BANNER ── */
+.banner { max-width:1140px; margin:0 auto 60px; padding:0 30px; }
+.banner-inner {
+  background: var(--pink-pale); border-radius: var(--radius-lg);
+  padding: 32px 36px; display: grid;
+  grid-template-columns: auto 1fr auto; align-items: center; gap: 28px;
+}
+@media(max-width:700px){
+  .banner-inner{ grid-template-columns:1fr; text-align:center; }
+  .hero{ grid-template-columns:1fr; }
+  .hero-left{ display:none; }
+  .hero-right{ padding:50px 24px 40px; }
+  .hero-quote{ font-size:1.6rem; }
+}
+.banner-icon { font-size:2.2rem; }
+.banner-eyebrow { font-size:.72rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--pink); margin-bottom:6px; }
+.banner h2 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--text); }
+.banner-desc { font-size:.88rem; color:var(--text-muted); margin-top:4px; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">
+    <span class="logo-icon">🌸</span>
+    <span class="logo-text">Bloom<span>Well</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="index.html" class="active">🏠 Home</a></li>
+    <li><a href="uhc.html">UHC</a></li>
+    <li><a href="forum.html">Forum</a></li>
+    <li><a href="aboutus.html">About us</a></li>
+  </ul>
+  <a href="forum.html" class="btn-ask">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    Ask a Question
+  </a>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg-overlay"></div>
+
+  <div class="hero-left">
+    <!-- Left side is empty and ready for your background image -->
+  </div>
+
+  <!-- RIGHT — Quote -->
+  <div class="hero-right">
+    <span class="hero-quote-mark">"</span>
+    <div class="quote-rotator" id="quoteRotator"></div>
+    <div class="quote-dots" id="quoteDots"></div>
+    <p class="hero-sub">We're here to guide you—<br>no judgment, just support. 💗</p>
+    <div class="hero-actions">
+      <a href="forum.html" class="btn-arrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SOLID SEARCH BAR -->
+<div class="search-section">
+  <div class="search-inner">
+    <div class="search-wrap">
+      <svg class="search-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" type="text" placeholder="Ask about pregnancy, health, or anything…">
+      <span class="search-flower">🌸</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon-wrap pink">🤰</div>
+      <h3>Pregnancy</h3>
+      <p>Everything you need to know about pregnancy and your health.</p>
+      <a href="uhc.html" class="btn-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap sage">🛡️</div>
+      <h3>Protection</h3>
+      <p>Learn about protection options and make informed choices.</p>
+      <a href="uhc.html" class="btn-arrow" style="background:var(--sage);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap blush">💓</div>
+      <h3>Health Tips</h3>
+      <p>Simple tips for a healthier and happier you every day.</p>
+      <a href="uhc.html" class="btn-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon-wrap mauve">💬</div>
+      <h3>Community</h3>
+      <p>Join the conversation and get support from people like you.</p>
+      <a href="forum.html" class="btn-arrow" style="background:var(--mauve);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- BANNER -->
+<div class="banner">
+  <div class="banner-inner">
+    <span class="banner-icon">🌸</span>
+    <div>
+      <p class="banner-eyebrow">We're here for you</p>
+      <h2>Take control of your future with knowledge and support.</h2>
+      <p class="banner-desc">BloomWell is a safe space for you to learn, ask, and grow. Your health, your future, your choice. 💗</p>
+    </div>
+    <a href="uhc.html" class="btn-primary">
+      Let's Get Started
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</div>
+
+<footer>BloomWell © 2026 — Your health, your future, your choice.</footer>
+
+<script>
+const quotes = [
+  { text: "An ounce of prevention is worth a pound of cure.", author: "Benjamin Franklin" },
+  { text: "The greatest wealth is health.", author: "Virgil" },
+  { text: "Take care of your body. It's the only place you have to live.", author: "Jim Rohn" },
+  { text: "Health is not valued till sickness comes.", author: "Thomas Fuller" },
+  { text: "Knowing yourself is the beginning of all wisdom.", author: "Aristotle" },
+  { text: "Your body hears everything your mind says. Stay kind to yourself.", author: "Naomi Judd" },
+];
+let currentQuote=0, quoteTimer;
+const rotator=document.getElementById('quoteRotator'), dotsEl=document.getElementById('quoteDots');
+quotes.forEach((q,i)=>{
+  const slide=document.createElement('div');
+  slide.className='quote-slide'+(i===0?' active':'');
+  slide.innerHTML=`<h1 class="hero-quote">${q.text}"</h1><p class="hero-attribution">— ${q.author}</p>`;
+  rotator.appendChild(slide);
+  const dot=document.createElement('button');
+  dot.className='quote-dot'+(i===0?' active':'');
+  dot.setAttribute('aria-label','Quote '+(i+1));
+  dot.onclick=()=>goToQuote(i);
+  dotsEl.appendChild(dot);
+});
+function goToQuote(idx){
+  const slides=rotator.querySelectorAll('.quote-slide'), dots=dotsEl.querySelectorAll('.quote-dot');
+  slides[currentQuote].classList.remove('active'); dots[currentQuote].classList.remove('active');
+  currentQuote=idx;
+  slides[currentQuote].classList.add('active'); dots[currentQuote].classList.add('active');
+  resetTimer();
+}
+function nextQuote(){ goToQuote((currentQuote+1)%quotes.length); }
+function resetTimer(){ clearInterval(quoteTimer); quoteTimer=setInterval(nextQuote,5000); }
+resetTimer();
+</script>
+</body>
+</html>

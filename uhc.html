@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BloomWell — UHC</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.uhc-hero {
+  margin-top: 68px;
+  position: relative;
+  min-height: 480px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px 100px;
+  text-align: center;
+  background: radial-gradient(ellipse 60% 60% at 80% 20%, #f8dce4 0%, transparent 70%),
+              radial-gradient(ellipse 50% 60% at 15% 80%, #dde8f0 0%, transparent 65%),
+              linear-gradient(160deg, #f4e8ec 0%, #e8f0f8 50%, #f5e4ec 100%);
+}
+ 
+.uhc-hero-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  background-color: transparent; z-index: 0;
+}
+.uhc-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg,rgba(244,232,236,0.72) 0%,rgba(232,240,248,0.62) 50%,rgba(245,228,236,0.68) 100%);
+  z-index: 1; pointer-events: none;
+}
+ 
+.flower-deco { position:absolute; pointer-events:none; opacity:0.4; font-size:3rem; z-index:3; }
+.sparkle-deco { position:absolute; color:var(--pink-light); pointer-events:none; z-index:3; animation:twinkle 2.5s ease-in-out infinite; }
+@keyframes twinkle { 0%,100%{opacity:.25;transform:scale(1)} 50%{opacity:.8;transform:scale(1.2)} }
+.heart-doodle { position:absolute; left:120px; bottom:160px; opacity:.3; z-index:3; animation:floatAnim 4s ease-in-out infinite; }
+@keyframes floatAnim { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+ 
+.uhc-quote-area {
+  position: relative; z-index: 4;
+  display: flex; flex-direction: column;
+  align-items: center; width: 100%; max-width: 700px;
+}
+.hero-quote-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 4.5rem; line-height: 0.55; color: var(--pink);
+  display: block; margin-bottom: 6px; align-self: flex-start;
+}
+.quote-rotator { position: relative; min-height: 170px; width: 100%; }
+.quote-slide {
+  position: absolute; top:0; left:0; width:100%;
+  opacity:0; transform:translateY(12px);
+  transition: opacity .6s ease, transform .6s ease;
+  pointer-events:none; text-align: left;
+}
+.quote-slide.active { opacity:1; transform:translateY(0); pointer-events:auto; position:relative; }
+.hero-quote {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700; line-height: 1.25;
+  color: var(--text); margin-bottom: 8px;
+}
+.hero-quote .highlight { color: var(--pink); }
+.hero-attribution { color: var(--pink); font-size: .9rem; font-weight: 600; margin-bottom: 12px; }
+.quote-dots { display:flex; gap:7px; margin-bottom:28px; position:relative; z-index:4; justify-content:center; }
+.quote-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:var(--pink-light); border:none; cursor:pointer; padding:0;
+  transition: background .2s, transform .2s;
+}
+.quote-dot.active { background:var(--pink); transform:scale(1.3); }
+ 
+.uhc-search-wrap { position:relative; z-index:4; width:100%; max-width:620px; margin-bottom:18px; }
+.uhc-arrow { position:absolute; right:40px; bottom:60px; z-index:5; }
+ 
+/* ── MAIN ── */
+.uhc-content { max-width:860px; margin:0 auto; padding:60px 30px 80px; }
+.accordion { background:var(--white); border:1.5px solid var(--blush); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow); margin-bottom:18px; }
+.accordion-header {
+  width:100%; display:flex; align-items:center; gap:14px;
+  padding:18px 24px; background:none; border:none;
+  cursor:pointer; text-align:left;
+  font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600;
+  color:var(--text); transition:background .2s;
+}
+.accordion-header:hover { background:var(--pink-pale); }
+.accordion-arrow {
+  margin-left:auto; width:32px; height:32px; border-radius:50%;
+  background:var(--pink-pale); display:flex; align-items:center; justify-content:center;
+  color:var(--pink); transition:transform .3s; flex-shrink:0;
+}
+.accordion.open .accordion-arrow { transform:rotate(180deg); }
+
+/* ── SCROLLABLE ACCORDION BODY ── */
+.accordion-body { max-height:0; overflow:hidden; transition:max-height .4s ease; }
+.accordion.open .accordion-body { max-height:420px; overflow-y:auto; }
+
+/* ── PINK SCROLLBAR ── */
+.accordion-body::-webkit-scrollbar { width:6px; }
+.accordion-body::-webkit-scrollbar-track { background:var(--pink-pale); }
+.accordion-body::-webkit-scrollbar-thumb { background:var(--pink-light); border-radius:99px; }
+.accordion-body::-webkit-scrollbar-thumb:hover { background:var(--pink); }
+
+.accordion-inner { padding:4px 24px 24px; border-top:1px solid var(--blush); }
+.accordion-inner ul { list-style:none; display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+.accordion-inner li {
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:.93rem; color:var(--text-muted); line-height:1.55;
+  padding:10px 14px; background:var(--pink-pale); border-radius:var(--radius);
+}
+.accordion-inner li .li-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
+
+/* ── VISIBLE LINK STYLING ── */
+.accordion-inner li a {
+  color: var(--pink);
+  text-decoration: underline;
+  word-break: break-word;
+}
+.accordion-inner li a:hover { opacity: 0.75; }
+
+.topic-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:50px; }
+@media(max-width:720px){ .topic-grid{ grid-template-columns:1fr; } }
+.topic-card { background:var(--white); border:1px solid var(--blush); border-radius:var(--radius-lg); padding:22px; box-shadow:var(--shadow); transition:transform .2s; }
+.topic-card:hover { transform:translateY(-4px); }
+.topic-card .topic-icon { font-size:1.8rem; margin-bottom:10px; }
+.topic-card h3 { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; margin-bottom:6px; }
+.topic-card p { font-size:.84rem; color:var(--text-muted); line-height:1.5; }
+</style>
+</head>
+<body>
+ 
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">
+    <span class="logo-icon">🌸</span>
+    <span class="logo-text">Bloom<span>Well</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="uhc.html" class="active">UHC</a></li>
+    <li><a href="forum.html">Forum</a></li>
+    <li><a href="aboutus.html">About us</a></li>
+  </ul>
+  <a href="forum.html" class="btn-ask">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    Ask a Question
+  </a>
+</nav>
+ 
+<section class="uhc-hero">
+  <div class="uhc-hero-bg"></div>
+  <div class="uhc-hero-overlay"></div>
+ 
+  <span class="flower-deco" style="top:-20px;left:-20px;font-size:5rem;opacity:.25">🌸</span>
+  <span class="flower-deco" style="top:20px;right:40px;font-size:6rem;opacity:.18">🌸</span>
+  <span class="flower-deco" style="bottom:20px;right:-10px;font-size:7rem;opacity:.15">🌸</span>
+  <span class="flower-deco" style="bottom:0;left:60px;font-size:4rem;opacity:.2">🌸</span>
+  <span class="sparkle-deco" style="top:90px;right:280px;font-size:1.2rem">✦</span>
+  <span class="sparkle-deco" style="top:50px;right:180px;font-size:.8rem;animation-delay:.5s">✦</span>
+  <span class="sparkle-deco" style="bottom:140px;left:200px;font-size:.9rem;animation-delay:1s">✦</span>
+  <svg class="heart-doodle" width="60" height="50" viewBox="0 0 60 50">
+    <path d="M30 45 C10 30,2 18,8 10 C14 3,25 5,30 14 C35 5,46 3,52 10 C58 18,50 30,30 45Z" stroke="#e8748a" stroke-width="1.5" fill="none" stroke-dasharray="4,3"/>
+  </svg>
+ 
+  <div class="uhc-quote-area">
+    <span class="hero-quote-mark">"</span>
+    <div class="quote-rotator" id="uhcRotator"></div>
+  </div>
+  <div class="quote-dots" id="uhcDots"></div>
+ 
+  <div class="uhc-search-wrap">
+    <div class="search-wrap">
+      <svg class="search-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" type="text" placeholder="Search topics, health info, and more…">
+      <span class="search-flower">🌸</span>
+    </div>
+  </div>
+ 
+  <button class="accordion-header" id="heroDropBtn"
+    style="max-width:620px;width:100%;background:rgba(255,255,255,0.75);border:1.5px solid var(--blush);border-radius:var(--radius-pill);backdrop-filter:blur(6px);justify-content:center;gap:10px;position:relative;z-index:4;"
+    onclick="toggleHeroAccordion()">
+    <svg id="heroArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e8748a" stroke-width="2.5" style="transition:transform .3s"><path d="M6 9l6 6 6-6"/></svg>
+    What You Need to Know
+  </button>
+ 
+  <a href="#uhc-main" class="btn-arrow uhc-arrow">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</section>
+ 
+<main id="uhc-main" class="uhc-content">
+  <div class="accordion open" id="acc1">
+    <button class="accordion-header" onclick="toggleAcc('acc1')">
+      <span style="font-size:1.1rem">⚠️</span> Risks of Teenage Pregnancy
+      <span class="accordion-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+    </button>
+    <div class="accordion-body"><div class="accordion-inner"><ul>
+      <li><span class="li-icon">🌸</span> Higher risk of complications during pregnancy and childbirth</li>
+      <li><span class="li-icon">🌸</span> Increased chance of premature birth and low birth weight</li>
+      <li><span class="li-icon">🌸</span> Significant mental health stress, including anxiety and depression</li>
+      <li><span class="li-icon">🌸</span> Interruption of education and career opportunities</li>
+      <li><span class="li-icon">🌸</span> Financial challenges and reduced economic stability</li>
+    </ul></div></div>
+  </div>
+
+  <div class="accordion" id="acc2">
+    <button class="accordion-header" onclick="toggleAcc('acc2')">
+      <span style="font-size:1.1rem">🛡️</span> Prevention Methods
+      <span class="accordion-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+    </button>
+    <div class="accordion-body"><div class="accordion-inner"><ul>
+      <li><span class="li-icon">🌸</span> Comprehensive sex education and open conversations</li>
+      <li><span class="li-icon">🌸</span> Access to contraceptives and family planning services</li>
+      <li><span class="li-icon">🌸</span> Counseling and youth support programs</li>
+      <li><span class="li-icon">🌸</span> Building healthy relationships and communication skills</li>
+    </ul></div></div>
+  </div>
+
+  <div class="accordion" id="acc3">
+    <button class="accordion-header" onclick="toggleAcc('acc3')">
+      <span style="font-size:1.1rem">💊</span> Contraceptive Options
+      <span class="accordion-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+    </button>
+    <div class="accordion-body"><div class="accordion-inner"><ul>
+      <li><span class="li-icon">🌸</span> Barrier methods: condoms (male and female), diaphragms</li>
+      <li><span class="li-icon">🌸</span> Hormonal methods: pills, patches, injections, implants</li>
+      <li><span class="li-icon">🌸</span> Long-acting reversible contraception (LARCs): IUDs</li>
+      <li><span class="li-icon">🌸</span> Emergency contraception for use after unprotected sex</li>
+    </ul></div></div>
+  </div>
+
+  <div class="accordion" id="acc4">
+    <button class="accordion-header" onclick="toggleAcc('acc4')">
+      <span style="font-size:1.1rem">📰</span> Articles
+      <span class="accordion-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+    </button>
+    <div class="accordion-body"><div class="accordion-inner"><ul>
+      <li><span class="li-icon">🌸</span> <a href="https://www.researchgate.net/publication/346551410_Young_ones_having_younger_ones_Adolescent_mothers'_repeated_pregnancy_experiences_in_the_Philippines?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExMUFKRWxYUUQ5U2paRlpOTXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR4rPsM0-HNROfZli6JAQy0IcD2UH3Q3cYJyvNpFUUVP9C0GaslQrW198mps0g_aem_Re5TXt2DuIqYZ0b9YnJZAg" target="_blank" rel="noopener noreferrer">Young ones having younger ones: Adolescent mothers' repeated pregnancy experiences in the Philippines</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://journals.msuiit.edu.ph/tmf/article/view/864?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExMUFKRWxYUUQ5U2paRlpOTXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR5kW3vy5GV5i3jJYqieDPq_G8cWxAdHNMMar2Iaz4bYHA3LxnkO1AkGYGaYaA_aem_3zzPOmXfaYSpi3at2l3eBA" target="_blank" rel="noopener noreferrer">Reproductive Realities and Youth-Led Solutions: Teenage Pregnancy in the Philippines Through a Social Innovation Framework</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://www.researchgate.net/publication/399961716_Psychosocial_Predictors_of_Teenage_Pregnancy_Roles_of_Self-Esteem_Study_Attitude_and_Family_Attachment?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExMUFKRWxYUUQ5U2paRlpOTXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR6OI644Crpd5xG9HsEeyHhtSkaOMRc_PE06CLGmf4uh4sHSDbi-0ctAQ4Ki8A_aem_FNsaPlT1PZbHtBNzZFt3Ow" target="_blank" rel="noopener noreferrer">Psychosocial Predictors of Teenage Pregnancy: Roles of Self-Esteem, Study Attitude, and Family Attachment</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://www.savethechildren.net/news/philippines-spike-58-child-pregnancies-should-be-wakeup-call-better-education-and-health" target="_blank" rel="noopener noreferrer">PHILIPPINES – Spike of 58% in child pregnancies should be a 'wakeup call' for better education and health services</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://newsinfo.inquirer.net/2196170/teen-pregnancies-on-the-rise-again?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExMUFKRWxYUUQ5U2paRlpOTXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR4D3fbvRxrF4HEjP6oC5ZReGk5uDXEAhafh1MTOkSdliT3e2EGU9iIRbi9Eag_aem_w-0-xqMj07HQP0BN1Ccjfg" target="_blank" rel="noopener noreferrer">Teen pregnancies on the rise again</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://www.abs-cbn.com/news/nation/2026/2/13/rising-teenage-pregnancy-among-young-teens-in-philippines-0821?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExMUFKRWxYUUQ5U2paRlpOTXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR6OI644Crpd5xG9HsEeyHhtSkaOMRc_PE06CLGmf4uh4sHSDbi-0ctAQ4Ki8A_aem_FNsaPlT1PZbHtBNzZFt3Ow" target="_blank" rel="noopener noreferrer">Rising pregnancy among young teens in Philippines</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://pco.gov.ph/news_releases/govt-intensifies-efforts-to-curb-teenage-pregnancy/?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExMUFKRWxYUUQ5U2paRlpOTXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR7Lgm3990JOVHuJl_KlY9XGvyhCgp_9fuqQH49HNfLUgXMCzmxGr-GJ6TVszA_aem_s-2uZmuK4ZYszZAkL5ijPg" target="_blank" rel="noopener noreferrer">Gov't intensifies efforts to curb teenage pregnancy</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://www.abs-cbn.com/news/health-science/2026/3/26/passage-of-bill-preventing-adolescent-pregnancy-urged-as-cases-among-girls-aged-10-14-rise-0107?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExMUFKRWxYUUQ5U2paRlpOTXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR6m9ulJczYHy2EmMFF0ZrSVjQtExrfQXpGvJQpGrPXgZiLNTEt5Ah1s33F9OQ_aem_9WlluwnwWZfTFVvzmZ6Tkw" target="_blank" rel="noopener noreferrer">Passage of bill preventing adolescent pregnancy urged as cases among girls aged 10-14 rise</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://link.springer.com/article/10.1186/s12978-022-01510-x?fbclid=IwY2xjawR3kMZleHRuA2FlbQIxMABicmlkETExQUpFbFhRRDlTalpGWk5Nc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHo4jrjgKul3nEb0ewR7IeG1KRo4xFz88TToIsaZ_i6HiwdINuL7Ry0BDgqLw_aem_FNsaPlT1PZbHtBNzZFt3Ow" target="_blank" rel="noopener noreferrer">Exposure to family planning messages and teenage pregnancy: results from the 2017 Philippine National Demographic and Health Survey</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://healthcoreclinic.org/2023/10/03/the-physical-and-emotional-effects-of-teen-pregnancy-on-the-mother" target="_blank" rel="noopener noreferrer">The Physical and Emotional Effects of Teen Pregnancy on the Mother</a></li>
+    </ul></div></div>
+  </div>
+
+  <div class="accordion" id="acc5">
+    <button class="accordion-header" onclick="toggleAcc('acc5')">
+      <span style="font-size:1.1rem">☎️</span> Hotline Numbers
+      <span class="accordion-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+    </button>
+    <div class="accordion-body"><div class="accordion-inner"><ul>
+      <li><span class="li-icon">🌸</span> Commission on Population and Development <br>(02) 8-531-5122</br> </li>
+      <li><span class="li-icon">🌸</span> UNICEF Philippines  <br>(02) 8462-6246</br> </li>
+      <li><span class="li-icon">🌸</span> Department of Social Welfare and Development  <br>(02) 8951-7124</br> </li>
+      <li><span class="li-icon">🌸</span> UNFPA Philippines <br>(63-2) 902-9900 </br> </li>
+      <li><span class="li-icon">🌸</span> Kaisahang Buhay Foundation  <br>+63) 917-311-4795 </br> </li>
+      
+    </ul></div></div>
+  </div>
+
+  <div class="accordion" id="acc6">
+    <button class="accordion-header" onclick="toggleAcc('acc6')">
+      <span style="font-size:1.1rem">🔗</span> Helpful Websites
+      <span class="accordion-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+    </button>
+    <div class="accordion-body"><div class="accordion-inner"><ul>
+      <li><span class="li-icon">🌸</span> <a href="https://redcross.org.ph/" target="_blank" rel="noopener noreferrer">Philippine Red Cross</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://www.dswd.gov.ph/" target="_blank" rel="noopener noreferrer">DSWD — Dept. of Social Welfare and Development</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://doh.gov.ph/" target="_blank" rel="noopener noreferrer">DOH — Department of Health</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://psa.gov.ph/" target="_blank" rel="noopener noreferrer">PSA — Philippine Statistics Authority</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://www.unfpa.org/" target="_blank" rel="noopener noreferrer">UNFPA — United Nations Population Fund</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://nnc.gov.ph/" target="_blank" rel="noopener noreferrer">NNC — National Nutrition Council</a></li>
+      <li><span class="li-icon">🌸</span> <a href="https://www.unicef.org/" target="_blank" rel="noopener noreferrer">UNICEF — National Nutrition Council</a></li>
+    </ul></div></div>
+  </div>
+
+  <div class="topic-grid">
+    <div class="topic-card"><div class="topic-icon">🤰</div><h3>Understanding Pregnancy</h3><p>Learn what happens to your body during pregnancy and what to expect at each stage.</p></div>
+    <div class="topic-card"><div class="topic-icon">🧠</div><h3>Mental Health</h3><p>Your emotional well-being matters. Find resources and tips for managing stress.</p></div>
+    <div class="topic-card"><div class="topic-icon">💬</div><h3>Talking to Someone</h3><p>Guidance on how to open up to a trusted adult, counselor, or healthcare provider.</p></div>
+  </div>
+</main>
+ 
+<footer>BloomWell © 2026 — Your health, your future, your choice.</footer>
+ 
+<script>
+const uhcQuotes = [
+  { text: "An ounce of prevention is worth a pound of cure.", author: "Benjamin Franklin" },
+  { text: "To keep the body in good health is a duty, otherwise we shall not be able to keep our mind strong and clear.", author: "Buddha" },
+  { text: "The first wealth is health.", author: "Ralph Waldo Emerson" },
+  { text: "It is health that is real wealth and not pieces of gold and silver.", author: "Mahatma Gandhi" },
+  { text: "A healthy outside starts from the inside.", author: "Robert Urich" },
+];
+let uhcCurrent=0, uhcTimer;
+const uhcRotator=document.getElementById('uhcRotator'), uhcDots=document.getElementById('uhcDots');
+ 
+uhcQuotes.forEach((q,i)=>{
+  const slide=document.createElement('div');
+  slide.className='quote-slide'+(i===0?' active':'');
+  slide.innerHTML='<h1 class="hero-quote">'+q.text+'"</h1><p class="hero-attribution">\u2014 '+q.author+'</p>';
+  uhcRotator.appendChild(slide);
+  const dot=document.createElement('button');
+  dot.className='quote-dot'+(i===0?' active':'');
+  dot.setAttribute('aria-label','Quote '+(i+1));
+  dot.onclick=(function(idx){ return function(){ goTo(idx); }; })(i);
+  uhcDots.appendChild(dot);
+});
+function goTo(idx){
+  const slides=uhcRotator.querySelectorAll('.quote-slide'), dots=uhcDots.querySelectorAll('.quote-dot');
+  slides[uhcCurrent].classList.remove('active'); dots[uhcCurrent].classList.remove('active');
+  uhcCurrent=idx;
+  slides[uhcCurrent].classList.add('active'); dots[uhcCurrent].classList.add('active');
+  reset();
+}
+function next(){ goTo((uhcCurrent+1)%uhcQuotes.length); }
+function reset(){ clearInterval(uhcTimer); uhcTimer=setInterval(next,5000); }
+reset();
+ 
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function toggleHeroAccordion(){
+  const acc=document.getElementById('acc1');
+  acc.classList.toggle('open');
+  document.getElementById('heroArrow').style.transform=acc.classList.contains('open')?'rotate(180deg)':'';
+  if(acc.classList.contains('open')) document.getElementById('uhc-main').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

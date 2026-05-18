@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BloomWell — Forum</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.forum-page { margin-top: 68px; background: var(--cream); min-height: 100vh; }
+
+/* ── HERO ── */
+.forum-hero-wrap { position: relative; overflow: hidden; }
+
+.forum-hero-base {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #fce8ed 0%, #fdf4f8 40%, #f8f0fc 70%, #fdf0f4 100%);
+  z-index: 0;
+}
+
+.forum-hero-bg {
+  position: absolute; inset: 0;
+  background-image: url(forumImg.png);
+  background-size: cover; background-position: center;
+  z-index: 1;
+}
+
+.forum-hero-overlay {
+  position: absolute; inset: 0;
+  background: rgba(255,248,250,0.78);
+  z-index: 2; pointer-events: none;
+}
+
+.forum-hero {
+  position: relative; z-index: 3;
+  background: transparent;
+  border-bottom: 1px solid var(--blush);
+  padding: 44px 40px 36px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start; gap: 30px;
+  max-width: 1140px; margin: 0 auto;
+}
+@media(max-width:768px){ .forum-hero{ grid-template-columns:1fr; } }
+
+.forum-hero-main { text-align: center; }
+.forum-title { font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:700; color:var(--text); margin-bottom:8px; }
+.forum-subtitle { color:var(--text-muted); font-size:.92rem; line-height:1.6; margin-bottom:22px; }
+.forum-search-wrap { max-width:580px; margin:0 auto; }
+
+.ask-sidebar {
+  background:var(--white); border:1.5px solid var(--blush);
+  border-radius:var(--radius-lg); padding:20px; max-width:220px;
+  box-shadow:var(--shadow); text-align:center; flex-shrink:0;
+}
+.ask-sidebar .sidebar-icon {
+  width:44px; height:44px; background:var(--pink-pale); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; margin:0 auto 12px;
+}
+.ask-sidebar p { font-size:.82rem; color:var(--text-muted); margin-bottom:4px; }
+.ask-sidebar strong { color:var(--pink); font-size:.88rem; }
+.ask-sidebar .btn-primary { width:100%; justify-content:center; margin-top:14px; font-size:.85rem; padding:10px; }
+
+/* ── BODY ── */
+.forum-body { max-width:1140px; margin:0 auto; padding:30px 40px 80px; }
+@media(max-width:600px){ .forum-body{ padding:20px 16px 60px; } }
+.forum-header-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; padding-bottom:14px; border-bottom:2px solid var(--blush); flex-wrap:wrap; gap:12px; }
+.forum-label { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--text); }
+.forum-count { font-size:.82rem; color:var(--text-muted); background:var(--pink-pale); padding:3px 10px; border-radius:var(--radius-pill); margin-left:10px; }
+.forum-table-header { display:grid; grid-template-columns:1fr 100px 120px; padding:0 16px 10px; font-size:.78rem; font-weight:600; color:var(--text-muted); letter-spacing:.5px; text-transform:uppercase; }
+@media(max-width:700px){ .forum-table-header{ display:none; } }
+
+.thread-list { display:flex; flex-direction:column; gap:8px; }
+.thread-row {
+  background:var(--white); border:1px solid var(--blush);
+  border-radius:var(--radius); padding:16px 20px;
+  display:grid; grid-template-columns:1fr 100px 120px 36px;
+  align-items:center; gap:10px;
+  transition:box-shadow .2s, transform .15s;
+}
+.thread-row:hover { box-shadow:var(--shadow-md); transform:translateY(-2px); }
+@media(max-width:700px){ .thread-row{ grid-template-columns:1fr auto; } }
+.thread-main { cursor:pointer; }
+.thread-top { display:flex; align-items:center; gap:8px; margin-bottom:5px; flex-wrap:wrap; }
+.thread-title { font-weight:600; font-size:.97rem; color:var(--text); line-height:1.3; margin-bottom:4px; }
+.thread-excerpt { font-size:.83rem; color:var(--text-muted); line-height:1.45; }
+.thread-dot { color:var(--text-muted); font-size:.75rem; }
+.thread-source { font-size:.78rem; color:var(--text-muted); }
+.thread-stat { display:flex; align-items:center; gap:5px; font-size:.83rem; color:var(--text-muted); cursor:pointer; }
+.thread-stat svg { color:var(--pink-light); }
+.thread-time { font-size:.8rem; color:var(--text-muted); cursor:pointer; }
+.btn-delete-thread {
+  width:32px; height:32px; border-radius:50%;
+  background:transparent; border:1.5px solid #fde8ee;
+  color:#e88; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .2s, color .2s; flex-shrink:0;
+}
+.btn-delete-thread:hover { background:#fde8ee; color:var(--rose); }
+.empty-state { text-align:center; padding:70px 20px; display:none; }
+.empty-state .empty-icon { font-size:3rem; margin-bottom:14px; }
+.empty-state h3 { font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--text); margin-bottom:8px; }
+.empty-state p { font-size:.88rem; color:var(--text-muted); margin-bottom:20px; }
+
+/* Thread detail */
+.thread-detail { display:none; position:fixed; inset:0; z-index:1500; background:rgba(42,26,31,.45); align-items:flex-start; justify-content:center; padding:90px 20px 20px; overflow-y:auto; }
+.thread-detail.open { display:flex; }
+.detail-box { background:var(--white); border-radius:var(--radius-lg); width:100%; max-width:680px; box-shadow:0 20px 60px rgba(42,26,31,.18); overflow:hidden; animation:slideUp .25s ease; position:relative; margin-bottom:20px; }
+@keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+.detail-header { padding:28px 28px 20px; border-bottom:1px solid var(--blush); }
+.detail-close { position:absolute; top:16px; right:16px; background:var(--pink-pale); border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--pink); font-size:1rem; transition:background .2s; }
+.detail-close:hover { background:var(--blush); }
+.detail-tag-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.detail-source { font-size:.78rem; color:var(--text-muted); }
+.detail-title { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:700; color:var(--text); line-height:1.35; margin-bottom:10px; padding-right:40px; }
+.detail-excerpt { font-size:.9rem; color:var(--text-muted); line-height:1.6; }
+.detail-meta { display:flex; align-items:center; gap:16px; margin-top:14px; font-size:.8rem; color:var(--text-muted); }
+.detail-meta span { display:flex; align-items:center; gap:4px; }
+.replies-section { padding:20px 28px; border-bottom:1px solid var(--blush); max-height:320px; overflow-y:auto; }
+.replies-title { font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--text-muted); margin-bottom:14px; }
+.reply-item { display:flex; gap:12px; margin-bottom:16px; animation:fadeIn .2s ease; position:relative; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.reply-avatar { width:34px; height:34px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; color:var(--white); }
+.reply-bubble { flex:1; background:var(--pink-pale); border-radius:0 var(--radius) var(--radius) var(--radius); padding:10px 14px; position:relative; }
+.reply-bubble .reply-name { font-size:.75rem; font-weight:700; color:var(--pink); margin-bottom:4px; }
+.reply-bubble .reply-text { font-size:.88rem; color:var(--text); line-height:1.5; }
+.reply-bubble .reply-time { font-size:.72rem; color:var(--text-muted); margin-top:5px; }
+.btn-delete-reply { position:absolute; top:8px; right:8px; background:transparent; border:none; cursor:pointer; color:#e8a8a8; font-size:.75rem; padding:2px 5px; border-radius:4px; transition:background .2s,color .2s; line-height:1; }
+.btn-delete-reply:hover { background:#fde8ee; color:var(--rose); }
+.no-replies { text-align:center; padding:20px 0; font-size:.85rem; color:var(--text-muted); }
+.reply-input-area { padding:18px 28px 24px; }
+.reply-input-row { display:flex; gap:10px; align-items:flex-end; }
+.reply-textarea { flex:1; padding:12px 16px; border:1.5px solid var(--blush); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.9rem; color:var(--text); background:var(--cream); outline:none; resize:none; transition:border-color .2s,box-shadow .2s; min-height:56px; max-height:120px; }
+.reply-textarea:focus { border-color:var(--pink-light); box-shadow:0 0 0 4px rgba(232,116,138,.10); background:var(--white); }
+.reply-textarea::placeholder { color:#bba8ae; }
+.btn-reply { background:var(--pink); color:var(--white); border:none; padding:12px 20px; border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.88rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; transition:background .2s,transform .15s; flex-shrink:0; }
+.btn-reply:hover { background:var(--rose); transform:translateY(-1px); }
+
+/* Modal */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(42,26,31,.45); z-index:2000; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:var(--white); border-radius:var(--radius-lg); padding:36px 32px; max-width:480px; width:94%; box-shadow:0 20px 60px rgba(42,26,31,.2); position:relative; animation:modalIn .25s ease; }
+@keyframes modalIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-close { position:absolute; top:16px; right:16px; background:var(--pink-pale); border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--pink); font-size:1rem; transition:background .2s; }
+.modal-close:hover { background:var(--blush); }
+.modal-title { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; margin-bottom:6px; }
+.modal-sub { font-size:.85rem; color:var(--text-muted); margin-bottom:24px; }
+.form-group { margin-bottom:16px; }
+.form-label { display:block; font-size:.82rem; font-weight:600; color:var(--text); margin-bottom:6px; }
+.form-input,.form-textarea { width:100%; padding:12px 16px; border:1.5px solid var(--blush); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:.92rem; color:var(--text); background:var(--cream); outline:none; transition:border-color .2s,box-shadow .2s; resize:none; }
+.form-input:focus,.form-textarea:focus { border-color:var(--pink-light); box-shadow:0 0 0 4px rgba(232,116,138,.10); background:var(--white); }
+.tag-selector { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.tag-opt { padding:5px 12px; border-radius:var(--radius-pill); font-size:.78rem; font-weight:600; cursor:pointer; border:1.5px solid transparent; transition:all .15s; }
+.tag-opt:hover { opacity:.85; }
+.tag-opt.selected { box-shadow:0 0 0 2px var(--pink); }
+.modal-footer { display:flex; justify-content:flex-end; gap:10px; margin-top:8px; }
+.btn-cancel { background:var(--pink-pale); color:var(--pink); border:none; padding:10px 22px; border-radius:var(--radius-pill); font-family:'DM Sans',sans-serif; font-size:.9rem; font-weight:600; cursor:pointer; transition:background .2s; }
+.btn-cancel:hover { background:var(--blush); }
+
+/* Toast */
+.confirm-toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:var(--text); color:var(--white); padding:14px 24px; border-radius:var(--radius-pill); font-size:.88rem; font-weight:500; display:flex; align-items:center; gap:14px; box-shadow:0 8px 30px rgba(0,0,0,.2); z-index:3000; opacity:0; pointer-events:none; transition:opacity .25s; }
+.confirm-toast.show { opacity:1; pointer-events:auto; }
+.confirm-toast button { background:var(--pink); color:var(--white); border:none; padding:6px 16px; border-radius:var(--radius-pill); font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; }
+.confirm-toast .toast-cancel { background:rgba(255,255,255,.15); }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="navbar-logo">
+    <span class="logo-icon">🌸</span>
+    <span class="logo-text">Bloom<span>Well</span></span>
+  </a>
+  <ul class="navbar-links">
+    <li><a href="index.html">🏠 Home</a></li>
+    <li><a href="uhc.html">UHC</a></li>
+    <li><a href="forum.html" class="active">Forum</a></li>
+    <li><a href="aboutus.html">About us</a></li>
+  </ul>
+  <button class="btn-ask" onclick="openModal()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+    Ask a Question
+  </button>
+</nav>
+
+<div class="forum-page">
+  <div class="forum-hero-wrap">
+    <div class="forum-hero-base"></div>
+    <div class="forum-hero-bg"></div>
+    <div class="forum-hero-overlay"></div>
+
+    <div class="forum-hero">
+      <div class="forum-hero-main">
+        <h1 class="forum-title">Welcome to the BloomWell Community 🌸</h1>
+        <p class="forum-subtitle">A safe space to learn, share, and support each other.<br>Let's build a healthier future together. 🌺</p>
+        <div class="forum-search-wrap">
+          <div class="search-wrap">
+            <svg class="search-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="search-input" id="searchInput" type="text" placeholder="Ask something about reproductive health, safe sex, or your concerns…" oninput="filterThreads(this.value)">
+            <span class="search-flower">🔍</span>
+          </div>
+        </div>
+      </div>
+      <div class="ask-sidebar">
+        <div class="sidebar-icon">💬</div>
+        <p>Have a question about <strong>reproductive health?</strong></p>
+        <p style="font-size:.8rem;color:var(--text-muted);margin-top:6px;">Ask the community and get support.</p>
+        <button class="btn-primary" onclick="openModal()">Ask a Question</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREAD LIST -->
+  <div class="forum-body">
+    <div class="forum-header-row">
+      <div>
+        <span class="forum-label">Latest Questions</span>
+        <span class="forum-count" id="threadCount">0 posts</span>
+      </div>
+      <button class="btn-primary" onclick="openModal()" style="font-size:.85rem;padding:9px 18px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Question
+      </button>
+    </div>
+    <div class="forum-table-header">
+      <span>Topic</span><span>Replies</span><span>Activity</span>
+    </div>
+    <div class="thread-list" id="threadList"></div>
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🌸</div>
+      <h3>No questions yet</h3>
+      <p>Be the first to start a conversation in the community!</p>
+      <button class="btn-primary" onclick="openModal()">Ask the First Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- THREAD DETAIL -->
+<div class="thread-detail" id="threadDetail" onclick="handleDetailOverlay(event)">
+  <div class="detail-box">
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+    <div class="detail-header">
+      <div class="detail-tag-row">
+        <span class="tag" id="detailTag"></span>
+        <span class="thread-dot">•</span>
+        <span class="detail-source" id="detailSource"></span>
+      </div>
+      <h2 class="detail-title" id="detailTitle"></h2>
+      <p class="detail-excerpt" id="detailExcerpt"></p>
+      <div class="detail-meta">
+        <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span id="detailReplyCount">0</span> replies</span>
+        <span>🕐 <span id="detailTime"></span></span>
+      </div>
+    </div>
+    <div class="replies-section" id="repliesSection">
+      <div class="replies-title">Replies</div>
+      <div id="repliesList"></div>
+    </div>
+    <div class="reply-input-area">
+      <div class="reply-input-row">
+        <textarea class="reply-textarea" id="replyText" placeholder="Write a supportive reply… 💗" rows="2"></textarea>
+        <button class="btn-reply" onclick="submitReply()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Reply
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ASK MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 class="modal-title">Ask the Community 💗</h2>
+    <p class="modal-sub">Post your question anonymously. We're here to help.</p>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input class="form-input" id="qTitle" placeholder="What's your question?">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-textarea" id="qDesc" rows="4" placeholder="Add more context…"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tag</label>
+      <div class="tag-selector">
+        <span class="tag-opt tag-pink selected" data-val="Reproductive Health" data-cls="tag-pink" onclick="selectTag(this)">Reproductive Health</span>
+        <span class="tag-opt tag-purple" data-val="Contraception" data-cls="tag-purple" onclick="selectTag(this)">Contraception</span>
+        <span class="tag-opt tag-green" data-val="Relationships" data-cls="tag-green" onclick="selectTag(this)">Relationships</span>
+        <span class="tag-opt tag-orange" data-val="Teenage Pregnancy" data-cls="tag-orange" onclick="selectTag(this)">Teenage Pregnancy</span>
+        <span class="tag-opt tag-teal" data-val="Sexual Health" data-cls="tag-teal" onclick="selectTag(this)">Sexual Health</span>
+        <span class="tag-opt tag-yellow" data-val="Support" data-cls="tag-yellow" onclick="selectTag(this)">Support</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="postQuestion()">Post Question</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-toast" id="confirmToast">
+  <span id="toastMsg">Delete this?</span>
+  <button id="toastConfirmBtn">Delete</button>
+  <button class="toast-cancel" onclick="dismissToast()">Cancel</button>
+</div>
+
+<footer>BloomWell © 2026 — Your health, your future, your choice.</footer>
+
+<script>
+const avatarColors=['#e8748a','#8fa882','#c4a7c8','#7ab8d4','#d4a870','#a870d4'];
+function randColor(){ return avatarColors[Math.floor(Math.random()*avatarColors.length)]; }
+function now(){ return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+const STORE_KEY='bw_forum_v3';
+let allThreads=JSON.parse(localStorage.getItem(STORE_KEY)||'[]');
+let selectedTag='Reproductive Health', selectedTagCls='tag-pink', activeId=null, pendingDelete=null;
+function save(){ localStorage.setItem(STORE_KEY,JSON.stringify(allThreads)); }
+function selectTag(el){ document.querySelectorAll('.tag-opt').forEach(t=>t.classList.remove('selected')); el.classList.add('selected'); selectedTag=el.dataset.val; selectedTagCls=el.dataset.cls; }
+function openModal(){ document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
+function handleOverlayClick(e){ if(e.target===e.currentTarget) closeModal(); }
+function postQuestion(){
+  const title=document.getElementById('qTitle').value.trim(), desc=document.getElementById('qDesc').value.trim();
+  if(!title||!desc){ alert('Please fill in both fields.'); return; }
+  allThreads.unshift({id:Date.now(),title,tag:selectedTag,tagClass:selectedTagCls,source:'Anonymous',excerpt:desc,time:now(),replies:[]});
+  save(); closeModal();
+  document.getElementById('qTitle').value=''; document.getElementById('qDesc').value='';
+  renderList(allThreads);
+}
+function openDetail(id){
+  const t=allThreads.find(x=>x.id===id); if(!t) return;
+  activeId=id;
+  const tagEl=document.getElementById('detailTag');
+  tagEl.className='tag '+t.tagClass; tagEl.textContent=t.tag;
+  document.getElementById('detailSource').textContent=t.source;
+  document.getElementById('detailTitle').textContent=t.title;
+  document.getElementById('detailExcerpt').textContent=t.excerpt;
+  document.getElementById('detailTime').textContent=t.time;
+  document.getElementById('replyText').value='';
+  renderReplies(t.replies||[]);
+  document.getElementById('threadDetail').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDetail(){ document.getElementById('threadDetail').classList.remove('open'); document.body.style.overflow=''; activeId=null; }
+function handleDetailOverlay(e){ if(e.target===e.currentTarget) closeDetail(); }
+function renderReplies(replies){
+  const list=document.getElementById('repliesList'), count=document.getElementById('detailReplyCount');
+  count.textContent=replies.length; list.innerHTML='';
+  if(!replies.length){ list.innerHTML='<div class="no-replies">No replies yet — be the first to respond! 💗</div>'; return; }
+  replies.forEach((r,idx)=>{
+    const div=document.createElement('div'); div.className='reply-item';
+    div.innerHTML=`<div class="reply-avatar" style="background:${r.color}">${r.initials}</div>
+      <div class="reply-bubble"><div class="reply-name">${r.name}</div><div class="reply-text">${r.text}</div><div class="reply-time">${r.time}</div>
+      <button class="btn-delete-reply" onclick="askDeleteReply(${activeId},${idx});event.stopPropagation();">✕</button></div>`;
+    list.appendChild(div);
+  });
+  document.getElementById('repliesSection').scrollTop=9999;
+}
+function submitReply(){
+  const text=document.getElementById('replyText').value.trim(); if(!text) return;
+  const t=allThreads.find(x=>x.id===activeId); if(!t) return;
+  if(!t.replies) t.replies=[];
+  const names=['Community Member','Anonymous','BloomWell User','A Friend'];
+  const name=names[Math.floor(Math.random()*names.length)];
+  const initials=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  t.replies.push({name,initials,color:randColor(),text,time:now()});
+  save(); renderList(allThreads); renderReplies(t.replies);
+  document.getElementById('replyText').value='';
+}
+function showToast(msg,onConfirm){
+  pendingDelete=onConfirm;
+  document.getElementById('toastMsg').textContent=msg;
+  document.getElementById('toastConfirmBtn').onclick=()=>{ onConfirm(); dismissToast(); };
+  document.getElementById('confirmToast').classList.add('show');
+  setTimeout(dismissToast,6000);
+}
+function dismissToast(){ document.getElementById('confirmToast').classList.remove('show'); pendingDelete=null; }
+function askDeleteThread(id,event){
+  event.stopPropagation();
+  showToast('Delete this question?',()=>{ allThreads=allThreads.filter(t=>t.id!==id); save(); if(activeId===id) closeDetail(); renderList(allThreads); });
+}
+function askDeleteReply(threadId,replyIdx){
+  showToast('Delete this reply?',()=>{
+    const t=allThreads.find(x=>x.id===threadId); if(!t||!t.replies) return;
+    t.replies.splice(replyIdx,1); save(); renderList(allThreads); renderReplies(t.replies);
+  });
+}
+function filterThreads(q){
+  const filtered=allThreads.filter(t=>t.title.toLowerCase().includes(q.toLowerCase())||t.excerpt.toLowerCase().includes(q.toLowerCase()));
+  renderList(filtered);
+}
+function renderList(list){
+  const container=document.getElementById('threadList'), emptyState=document.getElementById('emptyState'), countEl=document.getElementById('threadCount');
+  countEl.textContent=`${allThreads.length} post${allThreads.length!==1?'s':''}`;
+  container.innerHTML='';
+  if(!list.length){ emptyState.style.display='block'; return; }
+  emptyState.style.display='none';
+  list.forEach(t=>{
+    const rc=(t.replies||[]).length, row=document.createElement('div');
+    row.className='thread-row';
+    row.innerHTML=`
+      <div class="thread-main" onclick="openDetail(${t.id})">
+        <div class="thread-top"><span class="tag ${t.tagClass}">${t.tag}</span><span class="thread-dot">•</span><span class="thread-source">${t.source}</span></div>
+        <div class="thread-title">${t.title}</div><div class="thread-excerpt">${t.excerpt}</div>
+      </div>
+      <div class="thread-stat" onclick="openDetail(${t.id})">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>${rc}
+      </div>
+      <div class="thread-time" onclick="openDetail(${t.id})">🕐 ${t.time}</div>
+      <button class="btn-delete-thread" onclick="askDeleteThread(${t.id},event)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>`;
+    container.appendChild(row);
+  });
+}
+renderList(allThreads);
+</script>
+</body>
+</html>
